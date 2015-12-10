@@ -25,6 +25,7 @@ class PDFMerger
 {
 	private $_files;	//['form.pdf']  ["1,2,4, 5-19"]
 	private $_fpdi;
+	protected $javascript = '';
 	
 	/**
 	 * Merge PDFs.
@@ -34,6 +35,11 @@ class PDFMerger
 	{
 		require_once('fpdf/fpdf.php');
 		require_once('fpdi/fpdi.php');
+	}
+	
+	public function addJavascript($code){
+		$this->javascript .= $code;
+		return $this;
 	}
 	
 	/**
@@ -72,6 +78,11 @@ class PDFMerger
 		if(!isset($this->_files) || !is_array($this->_files)): throw new exception("No PDFs to merge."); endif;
 		
 		$fpdi = new FPDI;
+
+		if($this->javascript) {
+			error_log('Javascript hinzufuegen');
+			$fpdi->addJavascript($this->javascript);
+		}
 		
 		//merger operations
 		foreach($this->_files as $file)
